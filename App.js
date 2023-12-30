@@ -60,13 +60,13 @@ export default function App() {
   useEffect(() => {
     // Calculate distance when start or end points change
     const newDistance = cordinateDistanceCalculator(
-      startPoint.latitude,
-      startPoint.longitude,
-      endPoint.latitude,
-      endPoint.longitude
+      mapAngle(startPoint.latitude),
+      mapAngle(startPoint.longitude),
+      mapAngle(endPoint.latitude),
+      mapAngle(endPoint.longitude)
     );
     setDistance(newDistance);
-    const { direction, angle } = getDirectionAndAngle(startPoint, endPoint);
+    const { direction, angle } = getDirectionAndAngle(startPoint, endPoint,);
     setAngle(angle);
     setDirection(direction);
   }, [startPoint, endPoint]);
