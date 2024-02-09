@@ -11,10 +11,12 @@ import {
 import cordinateDistanceCalculator from "./cordinateDistanceCalculator";
 import getDirectionAndAngle from "./getDirectionAndAngle";
 import mapAngle from "./convertor";
+import lineEquation from "./lineEquation";
 
 const screenHeight = Dimensions.get("window").height;
 const screenWidth = Dimensions.get("window").width;
 export default function App() {
+  // console.log("New cordinate", lineEquation(1, 2, 3, 4));
   const [startPoint] = useState({
     latitude: 11.58222,
     longitude: 37.3860308,
@@ -103,19 +105,49 @@ export default function App() {
         <Line
           x1={`${mapAngle(startPoint.latitude)}%`}
           y1={`${mapAngle(startPoint.longitude)}%`}
-          x2={`${mapAngle(endPoint.latitude)}%`}
-          y2={`${mapAngle(endPoint.longitude)}%`}
+          // x2={`${mapAngle(endPoint.latitude)}%`}
+          // y2={`${mapAngle(endPoint.longitude)}%`}
+          x2={`${mapAngle(
+            lineEquation(
+              startPoint.latitude,
+              startPoint.longitude,
+              endPoint.latitude,
+              endPoint.longitude
+            ).newy1
+          )}%`}
+          y2={`${
+            lineEquation(
+              startPoint.latitude,
+              startPoint.longitude,
+              endPoint.latitude,
+              endPoint.longitude
+            ).newy2
+          }%`}
           stroke="gray"
           strokeWidth="2.5"
         />
 
-        {/* Destionation point */}
+        {/* Destionation red Circle */}
         <Circle
           onPress={() => {
             setVisiblity(true);
           }}
-          cx={`${mapAngle(endPoint.latitude)}%`}
-          cy={`${mapAngle(endPoint.longitude)}%`}
+          cx={`${
+            lineEquation(
+              startPoint.latitude,
+              startPoint.longitude,
+              endPoint.latitude,
+              endPoint.longitude
+            ).newy1
+          }%`}
+          cy={`${
+            lineEquation(
+              startPoint.latitude,
+              startPoint.longitude,
+              endPoint.latitude,
+              endPoint.longitude
+            ).newy2
+          }%`}
           r="10"
           fill="red"
         />
