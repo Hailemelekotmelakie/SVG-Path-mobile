@@ -1,56 +1,62 @@
-import Svg, { Line,Circle } from 'react-native-svg';
+import Svg, { Line, Circle } from "react-native-svg";
 import React, { useEffect, useState } from "react";
-import { Button, Dimensions,  StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  Button,
+  Dimensions,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import cordinateDistanceCalculator from "./cordinateDistanceCalculator";
 import getDirectionAndAngle from "./getDirectionAndAngle";
-import mapAngle from './convertor';
-  
-  const screenHeight=Dimensions.get("window").height;
-  const screenWidth=Dimensions.get("window").width;
+import mapAngle from "./convertor";
+
+const screenHeight = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
 export default function App() {
- 
   const [startPoint] = useState({
-    latitude:11.58222,
-    longitude:37.3860308
+    latitude: 11.58222,
+    longitude: 37.3860308,
   });
   const [endPoint, setEndPoint] = useState({
-    latitude:50,
-    longitude:-50
+    latitude: 50,
+    longitude: -50,
   });
 
-  const [Latitude, setLatitude] = useState(null)
-  const [Longitude, setLongitude] = useState(null)
-  const [visiblity, setVisiblity] = useState(false)
+  const [Latitude, setLatitude] = useState(null);
+  const [Longitude, setLongitude] = useState(null);
+  const [visiblity, setVisiblity] = useState(false);
 
- const updateEndPoint = () => {
-   if(Latitude!=null&&Longitude!=null){
-    setEndPoint({
-      latitude: parseFloat(Latitude),
-      longitude: parseFloat(Longitude)
-    });
-}
-  setVisiblity(false)
-};
+  const updateEndPoint = () => {
+    if (Latitude != null && Longitude != null) {
+      setEndPoint({
+        latitude: parseFloat(Latitude),
+        longitude: parseFloat(Longitude),
+      });
+    }
+    setVisiblity(false);
+  };
 
   let latDiff = Math.abs(startPoint.latitude - endPoint.latitude);
   let lonDiff = Math.abs(startPoint.longitude - endPoint.longitude);
 
   const verticalInitial = {
     latitude: startPoint.latitude - latDiff,
-    longitude: startPoint.longitude
+    longitude: startPoint.longitude,
   };
   const verticalEnd = {
     latitude: startPoint.latitude + latDiff,
-    longitude: startPoint.longitude
+    longitude: startPoint.longitude,
   };
 
   const horizontalInitial = {
     latitude: startPoint.latitude,
-    longitude: endPoint.longitude - lonDiff
+    longitude: endPoint.longitude - lonDiff,
   };
   const horizontalEnd = {
     latitude: startPoint.latitude,
-    longitude: startPoint.longitude + lonDiff
+    longitude: startPoint.longitude + lonDiff,
   };
 
   const [distance, setDistance] = useState(0);
@@ -66,13 +72,13 @@ export default function App() {
       mapAngle(endPoint.longitude)
     );
     setDistance(newDistance);
-    const { direction, angle } = getDirectionAndAngle(startPoint, endPoint,);
+    const { direction, angle } = getDirectionAndAngle(startPoint, endPoint);
     setAngle(angle);
     setDirection(direction);
   }, [startPoint, endPoint]);
 
   return (
-   <View style={styles.container} > 
+    <View style={styles.container}>
       <Svg height="100%" width="100%">
         {/* Draw latitude line */}
         <Line
@@ -104,8 +110,15 @@ export default function App() {
         />
 
         {/* Destionation point */}
-        <Circle onPress={()=>{setVisiblity(true)}} cx={`${mapAngle(endPoint.latitude)}%`} cy={`${mapAngle(endPoint.longitude)}%`} r="10" fill="red" />
-
+        <Circle
+          onPress={() => {
+            setVisiblity(true);
+          }}
+          cx={`${mapAngle(endPoint.latitude)}%`}
+          cy={`${mapAngle(endPoint.longitude)}%`}
+          r="10"
+          fill="red"
+        />
 
         {/* Relative horizontal */}
         <Line
@@ -128,82 +141,94 @@ export default function App() {
         />
       </Svg>
       <View style={styles.absoluteV}>
-      <Text style={styles.absText}>Distance: {distance} km at an angle of {angle}&deg; to {direction} direction</Text>
-      <Text style={styles.absText}>Your Lat {startPoint.latitude}, Lon {startPoint.longitude}</Text>
-      <Text onPress={()=>setVisiblity(true)} style={styles.absTextChanger}>Dest Lat {endPoint.latitude}, Lon {endPoint.longitude} (Click to change)</Text> 
+        <Text style={styles.absText}>
+          Distance: {distance} km at an angle of {angle}&deg; to {direction}{" "}
+          direction
+        </Text>
+        <Text style={styles.absText}>
+          Your Lat {startPoint.latitude}, Lon {startPoint.longitude}
+        </Text>
+        <Text onPress={() => setVisiblity(true)} style={styles.absTextChanger}>
+          Dest Lat {endPoint.latitude}, Lon {endPoint.longitude} (Click to
+          change)
+        </Text>
       </View>
-      <View style={[styles.inputsContainer,!visiblity&&{display:"none"}]}>
+      <View style={[styles.inputsContainer, !visiblity && { display: "none" }]}>
         <Text style={styles.inputText}>Type destination point </Text>
         <TextInput
-        onChangeText={(text)=>{setLatitude(text)}}
-        value={Latitude?Latitude?.toString():""}
-        placeholder="Enter Latitude"
-        keyboardType="numeric"
-        style={styles.inputButton}
+          onChangeText={(text) => {
+            setLatitude(text);
+          }}
+          value={Latitude ? Latitude?.toString() : ""}
+          placeholder="Enter Latitude"
+          keyboardType="numeric"
+          style={styles.inputButton}
         />
-        <TextInput 
-        onChangeText={(text)=>{setLongitude(text)}}
-        value={Longitude?Longitude?.toString():""}
-        placeholder="Enter Longitude"
-        keyboardType="numeric"
-        style={styles.inputButton}
+        <TextInput
+          onChangeText={(text) => {
+            setLongitude(text);
+          }}
+          value={Longitude ? Longitude?.toString() : ""}
+          placeholder="Enter Longitude"
+          keyboardType="numeric"
+          style={styles.inputButton}
         />
-        <Button title="Change" onPress={()=>updateEndPoint()} />
-        <Button title="Cancel" onPress={()=>setVisiblity(false)} />
+        <Button title="Change" onPress={() => updateEndPoint()} />
+        <Button title="Cancel" onPress={() => setVisiblity(false)} />
       </View>
-  </View>    
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignContent:"center",
-    justifyContent:"center",  
-    backgroundColor:"#000",
-    width:screenWidth,
-    height:screenHeight,
-    overflow:"scroll",    
+    alignContent: "center",
+    justifyContent: "center",
+    backgroundColor: "#000",
+    width: screenWidth,
+    height: screenHeight,
+    overflow: "scroll",
     flex: 1,
-   },
-  absoluteV:{
-    position:"absolute",
-    backgroundColor:"#ffffff55",
-    bottom:10,
-    left:10,
-    borderRadius:4,
-    gap:10,
-    paddingVertical:10
   },
-  absText:{
-    color:"white",
-    fontSize:12,
-    paddingHorizontal:10
+  absoluteV: {
+    position: "absolute",
+    backgroundColor: "#ffffff55",
+    bottom: 10,
+    left: 10,
+    borderRadius: 4,
+    gap: 10,
+    paddingVertical: 10,
   },
-  absTextChanger:{
-    color:"white",
-    fontSize:12,
-    backgroundColor:"#888",
-    padding:10,
+  absText: {
+    color: "white",
+    fontSize: 12,
+    paddingHorizontal: 10,
   },
-  inputsContainer:{
-    position:"absolute",
-    top:"50%",
-    left:"0%",
-    width:screenWidth,
-    backgroundColor:"white",
-    padding:20,
-    borderRadius:20,
-    gap:10
+  absTextChanger: {
+    color: "white",
+    fontSize: 12,
+    backgroundColor: "#888",
+    padding: 10,
   },
-  inputText:{
-    textAlign:"center",
-    fontSize:15,
-    fontWeight:"bold"
+  inputsContainer: {
+    position: "absolute",
+    top: "50%",
+    left: "0%",
+    width: screenWidth,
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 20,
+    gap: 10,
   },
-  inputButton:{
-    borderWidth:1,
-    borderColor:"#ddd",
-    padding:7,
-    borderRadius:10
-  }
+  inputText: {
+    textAlign: "center",
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  inputButton: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    padding: 7,
+    borderRadius: 10,
+  },
 });
